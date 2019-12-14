@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>1</title>
+    <script src="animate.js"></script>
+    <style>
+        .box {
+            width: 1200px;
+            height: 380px;
+            border: 1px solid red;
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slider {
+            width: 8400px;
+            position: absolute;
+            left: -1200px;
+        }
+
+        .slide {
+            width: 1200px;
+            overflow: hidden;
+            float: left;
+        }
+
+        .box > span {
+            display: block;
+            width: 30px;
+            height: 50px;
+            text-align: center;
+            cursor: pointer;
+            color: #ccc;
+            top: 175px;
+            line-height: 50px;
+            background: rgb(255,0,0);
+            font-size:30px;
+            position: absolute;
+            opacity: 0;
+        }
+
+        .nav {
+            position: absolute;
+            left: 500px;
+            bottom: 0px;
+        }
+
+            .nav > li {
+                float: left;
+                width: 20px;
+                height: 20px;
+               background: #ccc;
+                cursor: pointer;
+                margin: 0 10px;
+                border-radius: 50%;
+                list-style:none;
+                text-align:center;
+            }
+
+            .nav .active {
+                background: red;
+            }
+
+        #left {
+            left: 30px;
+        }
+
+        #right {
+            right: 30px;
+        }
+        .top{
+            height:20px;
+            background:#ccc;
+            margin:-8px;
+            color:red;
+        }
+         .tophide{
+            width:1200px;
+            height:20px;
+            position :absolute;
+            top:0px;
+            left:90px;
+            height:20px;
+            overflow:hidden;
+        }
+        .move{
+           height:20px;
+           font-size:14px;
+           width:400px;
+        }
+        .top > img{
+            margin-top:2px;
+            margin-left:40px;
+        }
+    </style>
+   
+</head>
+<body>
+    <div class="top">
+        <img src="/images/a15.png"/>
+        <div class="tophide">
+            <div class="move">[温馨提示]最近有不少不法分子在网上骗人，请大家注意!!！</div>
+        </div>
+    </div>
+	<div class="box" id="box">
+		<div class="slider" id="slider">
+			<div class="slide"><img src="/images/b5.png" alt=""></div>
+			<div class="slide"><img src="/images/b1.png" alt=""></div>
+			<div class="slide"><img src="/images/b2.png" alt=""></div>
+			<div class="slide"><img src="/images/b3.png" alt=""></div>
+			<div class="slide"><img src="/images/b4.png" alt=""></div>
+			<div class="slide"><img src="/images/b5.png" alt=""></div>
+			<div class="slide"><img src="/images/b1.png" alt=""></div>
+		</div>
+		<span id="left"><</span>
+		<span id="right">></span>
+		<ul class="nav" id="nav">
+			<li class="active">1</li>
+			<li>2</li>
+			<li>3</li>
+			<li>4</li>
+			<li>5</li>
+		</ul>
+	</div>
+</body>
+<script>
+    var move = document.getElementsByClassName('move')[0];
+	var box = document.getElementById('box');
+	var oNavlist = document.getElementById('nav').children;
+	var slider = document.getElementById('slider');
+	var left = document.getElementById('left');
+	var right = document.getElementById('right');
+    var index = 1;
+    var idx = 0;
+    var timer;
+
+    var isMoving = false;
+
+
+   
+
+    setInterval(function () {
+        var styleObj = getComputedStyle(move);
+        var pLeft = parseInt(styleObj["marginLeft"]);
+        move.style.marginLeft = pLeft - 1 + "px";
+        var moveLeft = parseInt(move.style.marginLeft);
+        if (moveLeft == -400) {
+            move.style.marginLeft = 1300 + "px";
+        }
+    }, 15);
+
+    function next() {
+        if (!isMoving) {
+            isMoving = true;
+            index++;
+            navChange();
+            animate(slider, { left: -1200 * index }, function () {
+                if (index === 6) {
+                    slider.style.left = "-1200px";
+                    index = 1;
+                }
+                isMoving = false;
+            });
+        }
+    }
+    function prev() {
+        if (!isMoving) {
+            isMoving = true;
+            index--;
+            navChange();
+            animate(slider, { left: -1200 * index }, function () {
+                if (index === 0) {
+                    slider.style.left = "-6000px";
+                    index = 5;
+                }
+                isMoving = false;
+            });
+        }
+    }
+
+    timer = setInterval(next, 2000);
+
+    box.onmouseover = function () {
+        animate(left, {opacity: 50});
+        animate(right, {opacity: 50});
+        clearInterval(timer);
+    }
+
+    box.onmouseout = function () {
+        animate(left, { opacity: 0 });
+        animate(right, { opacity: 0 });
+        timer = setInterval(next, 2000);
+    }
+
+    right.onclick = next;
+    left.onclick = prev;
+
+    for (var j = 0; j < oNavlist.length; ++j) {
+        oNavlist[j].idx = j;
+        oNavlist[j].onclick = function () {
+            index = this.idx + 1;
+            navChange();
+            animate(slider, {left:-1200*index})
+        }
+    }
+
+    function navChange() {
+        for (var i = 0; i < oNavlist.length; ++i) {
+            oNavlist[i].className = '';
+        }
+        if (index === 6) {
+            oNavlist[0].className = 'active';
+        }
+        else if(index === 0){
+            oNavlist[4].className = "active";
+        }else {
+            oNavlist[index - 1].className = "active";
+        }
+        
+    }
+
+    
+</script>
+</html>
